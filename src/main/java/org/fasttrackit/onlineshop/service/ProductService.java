@@ -1,6 +1,7 @@
 package org.fasttrackit.onlineshop.service;
 
 import org.fasttrackit.onlineshop.domain.Product;
+import org.fasttrackit.onlineshop.exception.ResourceNotFoundException;
 import org.fasttrackit.onlineshop.persistance.ProductRepository;
 import org.fasttrackit.onlineshop.transfer.product.SaveProductRequest;
 import org.slf4j.Logger;
@@ -36,5 +37,14 @@ public class ProductService {
         product.setImagePath(request.getImagePath());
 
         return productRepository.save(product);
+    }
+
+    public Product getProduct(Long id){
+        LOGGER.info("Retrieving product{}", id);
+//        using Optional
+        return productRepository.findById(id)
+//                mai jos avem lambda expressions
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Product " + id + " not found."));
     }
 }
