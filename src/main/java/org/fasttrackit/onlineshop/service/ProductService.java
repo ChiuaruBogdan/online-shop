@@ -6,26 +6,27 @@ import org.fasttrackit.onlineshop.persistance.ProductRepository;
 import org.fasttrackit.onlineshop.transfer.product.SaveProductRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
-//    logger mai jos, a fost necesara migrarea catre importul "slf4j"
+    //    logger mai jos, a fost necesara migrarea catre importul "slf4j"
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
 
 //    cauta "Lombok" si citeste
 
-//    mai jos este OOP design pattern - IoC = Inversion of Control
+    //    mai jos este OOP design pattern - IoC = Inversion of Control
     private final ProductRepository productRepository;
 
-//    adnotarea "@Autowired" injecteaza dependenta. OOP design pattern numit = Dependency Injection
+    //    adnotarea "@Autowired" injecteaza dependenta. OOP design pattern numit = Dependency Injection
     @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(SaveProductRequest request){
+    public Product createProduct(SaveProductRequest request) {
 //apelare logger mai jos. La logger este nevoie de " {}" pentru concatenare, nu + cum eram obisnuiti
         LOGGER.info("Creating product: {}", request);
 
@@ -39,12 +40,29 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product getProduct(Long id){
+    public Product getProduct(Long id) {
         LOGGER.info("Retrieving product{}", id);
 //        using Optional
         return productRepository.findById(id)
 //                mai jos avem lambda expressions
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Product " + id + " not found."));
+    }
+
+
+    public Product updateProduct(long id, SaveProductRequest request) {
+        LOGGER.info("Updating product{}: {}", id, request);
+
+        Product product = getProduct(id);
+//        mai jos copiem proprietati de pe "request" si le punem pe "product" cu BeanUtils.copyProperties
+        BeanUtils.copyProperties(request, product);
+
+        return productRepository.save(product);
+    }
+
+    public void deleteProduct(long id) {
+        LOGGER.info("Deleting product{}", id);
+
+        productRepository.deleteById(id);
     }
 }
