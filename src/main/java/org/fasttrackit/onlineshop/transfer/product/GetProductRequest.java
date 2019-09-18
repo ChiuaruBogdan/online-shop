@@ -16,7 +16,7 @@ public class GetProductRequest {
     }
 
     public Integer getMinimumQuantity() {
-        Integer minimumQuantity;
+        return minimumQuantity;
     }
 
     public void setMinimumQuantity(int minimumQuantity) {
