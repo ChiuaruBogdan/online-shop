@@ -44,7 +44,7 @@ public class ProductServiceIntegrationTests {
     //    mai jos testam metoda getProduct cand exista ID
     @Test
     public void testGetProduct_whenExistingEntity_thenReturnProduct() {
-//        alt+enter pe createdProduct pentru a il stoca ca si variabila
+//        alt+enter pe createProduct pentru a il stoca ca si variabila
         Product createdProduct = createProduct();
 
         Product retrievedProduct = productService.getProduct(createdProduct.getId());
