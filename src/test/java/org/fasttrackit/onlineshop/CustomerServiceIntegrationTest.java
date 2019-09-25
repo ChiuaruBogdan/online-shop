@@ -3,6 +3,7 @@ package org.fasttrackit.onlineshop;
 
 import org.fasttrackit.onlineshop.domain.Customer;
 import org.fasttrackit.onlineshop.service.CustomerService;
+import org.fasttrackit.onlineshop.steps.CustomerSteps;
 import org.fasttrackit.onlineshop.transfer.product.customer.SaveCustomerRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,18 +23,12 @@ public class CustomerServiceIntegrationTest {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private CustomerSteps customerSteps;
+
     @Test
     public void testCreateCustomer_whenValidRequest_thenReturnCustomer(){
+    customerSteps.createCustomer();
 
-        SaveCustomerRequest request = new SaveCustomerRequest();
-        request.setFirstName("Vasile");
-        request.setLastName("Ionescu");
-
-        Customer customer = customerService.createCustomer(request);
-        assertThat(customer, notNullValue());
-        assertThat(customer.getId(), notNullValue());
-        assertThat(customer.getId(), greaterThan(0L));
-        assertThat(customer.getFirstName(), is(request.getFirstName()));
-        assertThat(customer.getLastName(), is(request.getLastName()));
     }
 }
