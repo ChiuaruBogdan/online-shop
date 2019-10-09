@@ -3,16 +3,14 @@ package org.fasttrackit.onlineshop;
 import org.fasttrackit.onlineshop.domain.Product;
 import org.fasttrackit.onlineshop.exception.ResourceNotFoundException;
 import org.fasttrackit.onlineshop.service.ProductService;
+import org.fasttrackit.onlineshop.steps.ProductSteps;
 import org.fasttrackit.onlineshop.transfer.product.SaveProductRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.TransactionSystemException;
-
-import javax.validation.constraints.NotNull;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -25,10 +23,12 @@ public class ProductServiceIntegrationTests {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductSteps productSteps;
 
     @Test
     public void testCreateProduct_whenValidRequest_thenReturnCreatedProduct() {
-        createProduct();
+        productSteps.createProduct();
     }
 
 
@@ -45,7 +45,7 @@ public class ProductServiceIntegrationTests {
     @Test
     public void testGetProduct_whenExistingEntity_thenReturnProduct() {
 //        alt+enter pe createProduct pentru a il stoca ca si variabila
-        Product createdProduct = createProduct();
+        Product createdProduct = productSteps.createProduct();
 
         Product retrievedProduct = productService.getProduct(createdProduct.getId());
 
@@ -56,25 +56,6 @@ public class ProductServiceIntegrationTests {
     }
 
 
-    private Product createProduct() {
-        SaveProductRequest request = new SaveProductRequest();
-        request.setName("Computer");
-        request.setDescription("Some description");
-        request.setPrice(2000);
-        request.setQuantity(100);
-
-        Product product = productService.createProduct(request);
-
-        assertThat(product, notNullValue());
-        assertThat(product.getId(), notNullValue());
-        assertThat(product.getId(), greaterThan(0L));
-        assertThat(product.getName(), is(request.getName()));
-        assertThat(product.getDescription(), is(request.getDescription()));
-        assertThat(product.getPrice(), is(request.getPrice()));
-        assertThat(product.getQuantity(), is(request.getQuantity()));
-
-        return product;
-    }
 //        acum facem un test negativ
 
     @Test(expected = ResourceNotFoundException.class)
@@ -83,10 +64,10 @@ public class ProductServiceIntegrationTests {
     }
 
 
-//    testing pentru quest
+    //    testing pentru quest
     @Test
-    public void testUpdateProduct_whenExistingEntity_thenThrowNotFoundException(){
-        Product createdProduct = createProduct();
+    public void testUpdateProduct_whenExistingEntity_thenThrowNotFoundException() {
+        Product createdProduct = productSteps.createProduct();
 
         SaveProductRequest request = new SaveProductRequest();
         request.setName(createdProduct.getName() + " Updated");
